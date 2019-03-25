@@ -4,13 +4,13 @@ workflow "spack tests" {
 
 action "lint" {
   uses = "actions/bin/shellcheck@master"
-  args = "./actions/spack/install.sh"
+  args = "-x install.sh"
 }
 
 action "install" {
   needs = "lint"
-  uses = "./actions/spack"
-  runs = "install"
+  uses = "./"
+  runs = "install.sh"
   env = {
       SPACK_GIT_URL = "https://github.com/spack/spack"
       SPACK_GIT_REF = "develop"
@@ -20,7 +20,7 @@ action "install" {
 
 action "run" {
   needs = "install"
-  uses = "./actions/spack"
+  uses = "./"
   runs = "run"
   args = ["lulesh2.0", "-s", "100", "-i", "10"]
   env = {

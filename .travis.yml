@@ -8,4 +8,4 @@ install:
 - export PATH=$PATH:/tmp/popper/cli/bin
 - export PYTHONUNBUFFERED=1
 script:
-- popper run --wfile actions/spack/test.workflow
+- popper run --recursive
