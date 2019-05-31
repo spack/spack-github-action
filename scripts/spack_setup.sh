@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 if [ -z "$SPACK_SPEC" ]; then
   echo "Expecting SPACK_SPEC variable"
@@ -14,19 +14,20 @@ if [ -z "$SPACK_GIT_REF" ]; then
   SPACK_GIT_REF="develop"
 fi
 if [ -z "$SPACK_ROOT" ]; then
-  echo "using $WORKSPACE/install/spack as SPACK_ROOT"
-  SPACK_ROOT=$WORKSPACE/install/spack
+  echo "using $GITHUB_WORKSPACE/install/spack as SPACK_ROOT"
+  SPACK_ROOT=$GITHUB_WORKSPACE/install/spack
 fi
-mkdir -p $(dirname $SPACK_ROOT)
+mkdir -p "$(dirname "$SPACK_ROOT")"
 
 # clone
-if [ ! -d $SPACK_ROOT ]; then
-  git clone $SPACK_GIT_URL $SPACK_ROOT
+if [ ! -d "$SPACK_ROOT" ]; then
+  git clone $SPACK_GIT_URL "$SPACK_ROOT"
 fi
 
 # bash env
 export PATH=$PATH:$SPACK_ROOT/bin
-source $SPACK_ROOT/share/spack/setup-env.sh
+# shellcheck source=/dev/null
+source "$SPACK_ROOT"/share/spack/setup-env.sh
 
 # load modules
 if [ -n "$SPACK_USE_MODULES" ]; then
@@ -35,40 +36,40 @@ if [ -n "$SPACK_USE_MODULES" ]; then
     exit 1
   else
     module purge
-    module load $SPACK_MODULE_LIST
+    module load "$SPACK_MODULE_LIST"
     for m in ${SPACK_MODULE_LIST//,/ }; do
-      module load $m
+      module load "$m"
     done
   fi
 fi
 
 # reset spack config
 if [ "$1" == "fetch" ]; then
-  git -C $SPACK_ROOT fetch
-  git -C $SPACK_ROOT reset --hard $SPACK_GIT_REF
+  git -C "$SPACK_ROOT" fetch
+  git -C "$SPACK_ROOT" reset --hard "$SPACK_GIT_REF"
 
-  if [ -n $SPACK_USE_MODULES ]; then
+  if [ -n "$SPACK_USE_MODULES" ]; then
     function get_module_path {
-      module_info=$(module show $1 2>&1 >/dev/null | grep 'prepend-path.* PATH' | awk '{ print $3 }')
-      dirname $module_info
+      module_info=$(module show "$1" 2>&1 >/dev/null | grep 'prepend-path.* PATH' | awk '{ print $3 }')
+      dirname "$module_info"
     }
     function get_module_version {
-      basename $(get_module_path $1)
+      basename "$(get_module_path "$1")"
     }
 
     for m in ${SPACK_MODULE_LIST//,/ }; do
       mod_name=$m
       if [[ "$m" == **"/"** ]]; then
-        mod_name=$(dirname $m)
+        mod_name=$(dirname "$m")
       fi
 PACKAGESYML+="  $mod_name:
     paths:
-      $mod_name@$(get_module_version $m): $(get_module_path $m)
+      $mod_name@$(get_module_version "$m"): $(get_module_path "$m")
     buildable: False
 "
     done
 
     # add system packages
-    echo "$PACKAGESYML" >> $SPACK_ROOT/etc/spack/defaults/packages.yaml
+    echo "$PACKAGESYML" >> "$SPACK_ROOT"/etc/spack/defaults/packages.yaml
   fi
 fi
