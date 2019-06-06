@@ -11,10 +11,6 @@ action "spack install" {
   needs = "lint"
   uses = "./"
   args = "install lulesh~mpi"
-  env = {
-      SPACK_RESET_CONFIG="true"
-      SPACK_GIT_REF ="develop"
-  }
 }
 action "create view" {
   needs = "spack install"
@@ -24,6 +20,6 @@ action "create view" {
 
 action "run lulesh" {
   needs = "create view"
-  uses = "actions/bin/sh@master"
-  args = ["PATH=$PATH:$GITHUB_WORKSPACE/install/bin lulesh2.0 -s 100 -i 10"]
+  uses = "./"
+  runs = ["sh", "-c", "install/bin/lulesh2.0 -s 100 -i 10"]
 }
