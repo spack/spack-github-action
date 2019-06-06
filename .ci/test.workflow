@@ -1,5 +1,5 @@
 workflow "spack tests" {
-  resolves = "run with spack"
+  resolves = "run lulesh"
 }
 
 action "lint" {
@@ -7,7 +7,7 @@ action "lint" {
   args = "-x entrypoint.sh"
 }
 
-action "run with spack" {
+action "spack install" {
   needs = "lint"
   uses = "./"
   args = "install lulesh~mpi"
@@ -15,4 +15,15 @@ action "run with spack" {
       SPACK_RESET_CONFIG="true"
       SPACK_GIT_REF ="develop"
   }
+}
+action "create view" {
+  needs = "spack install"
+  uses = "./"
+  args = "view -d yes hard -i ./install/ lulesh~mpi "
+}
+
+action "run lulesh" {
+  needs = "create view"
+  uses = "actions/bin/sh@master"
+  args = ["PATH=$PATH:$GITHUB_WORKSPACE/install/bin lulesh2.0 -s 100 -i 10"]
 }
