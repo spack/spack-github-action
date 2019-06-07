@@ -10,7 +10,7 @@ action "lint" {
 action "spack install" {
   needs = "lint"
   uses = "./"
-  args = "install lulesh~mpi"
+  args = "install lulesh~mpi cppflags=-static cflags=-static"
 }
 action "create view" {
   needs = "spack install"
