@@ -20,6 +20,6 @@ action "create view" {
 
 action "run lulesh" {
   needs = "create view"
-  uses = "./"
+  uses = "docker://debian:buster-slim"
   runs = ["sh", "-c", "install/bin/lulesh2.0 -s 100 -i 10"]
 }
