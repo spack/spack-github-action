@@ -20,7 +20,7 @@ action "install" {
 }
 
 action "create view" {
-  needs = "spack install"
+  needs = "install"
   uses = "popperized/spack@master"
   args = "view -d yes hard -i ./install/ lulesh~mpi "
 }
