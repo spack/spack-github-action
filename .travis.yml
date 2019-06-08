@@ -4,8 +4,8 @@ language: python
 python: 3.7
 services: docker
 install:
-- git clone --recursive https://github.com/systemslab/popper /tmp/popper
-- export PATH=$PATH:/tmp/popper/cli/bin
+- git clone https://github.com/systemslab/popper /tmp/popper
 - export PYTHONUNBUFFERED=1
+- pip install /tmp/popper/cli
 script:
 - popper run --recursive

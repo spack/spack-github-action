@@ -1,29 +1,25 @@
 workflow "spack tests" {
-  resolves = "run"
+  resolves = "run lulesh"
 }
 
 action "lint" {
   uses = "actions/bin/shellcheck@master"
-  args = "-x install.sh"
+  args = "-x entrypoint.sh"
 }
 
-action "install" {
+action "spack install" {
   needs = "lint"
   uses = "./"
-  runs = "install.sh"
-  env = {
-      SPACK_GIT_URL = "https://github.com/spack/spack"
-      SPACK_GIT_REF = "develop"
-      SPACK_SPEC = "lulesh~mpi"
-  }
+  args = "install lulesh~mpi cppflags=-static cflags=-static"
+}
+action "create view" {
+  needs = "spack install"
+  uses = "./"
+  args = "view -d yes hard -i ./install/ lulesh~mpi "
 }
 
-action "run" {
-  needs = "install"
-  uses = "./"
-  runs = "run"
-  args = ["lulesh2.0", "-s", "100", "-i", "10"]
-  env = {
-      SPACK_SPEC = "lulesh~mpi"
-  }
+action "run lulesh" {
+  needs = "create view"
+  uses = "docker://debian:buster-slim"
+  runs = ["sh", "-c", "install/bin/lulesh2.0 -s 100 -i 10"]
 }
