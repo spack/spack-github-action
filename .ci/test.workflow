@@ -7,19 +7,21 @@ action "lint" {
   args = "-x entrypoint.sh"
 }
 
-action "spack install" {
-  needs = "lint"
-  uses = "./"
-  args = "install lulesh~mpi cppflags=-static cflags=-static"
+action "add compiler"{
+    needs = "lint"
+    uses = "./"
+    args = "compiler find"
 }
-action "create view" {
-  needs = "spack install"
+
+action "spack install" {
+  needs = "add compiler"
   uses = "./"
-  args = "view -d yes hard -i ./install/ lulesh~mpi "
+  args = "install lulesh"
 }
 
 action "run lulesh" {
-  needs = "create view"
+  needs = "spack install"
   uses = "docker://debian:buster-slim"
-  runs = ["sh", "-c", "install/bin/lulesh2.0 -s 100 -i 10"]
+  runs = ["sh", "-c",
+           "mpiexec --allow-run-as-root -np 1 ./install/spack/bin/lulesh2.0 -s 100 -i 10"]
 }
