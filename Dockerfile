@@ -13,6 +13,7 @@ RUN apt update && \
     sed -i "s+$old_var+$new_var+" /spack/etc/spack/defaults/config.yaml; \
     rm -rf /var/lib/apt/lists/*
 ADD entrypoint.sh /
+RUN apt-get update && apt-get install -y libperl-dev
 
 ENV SPACK_ROOT=/spack
 ENV PATH=$PATH:/spack/bin
