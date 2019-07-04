@@ -16,12 +16,12 @@ action "add compiler"{
 action "spack install" {
   needs = "add compiler"
   uses = "./"
-  args = "install lulesh~mpi"
+  args = "install lulesh+mpi"
 }
 
 action "run lulesh" {
   needs = "spack install"
   uses = "./"
   runs = ["sh", "-c",
-           "mpiexec --allow-run-as-root -np 1 ./install/spack/bin/lulesh2.0 -s 100 -i 10"]
+           "mpiexec -np 1 ./install/linux-debian10-x86_64/gcc-8.3.0/lulesh-2.0.3-6qj75oexwprfrr6jjq52cbepcc6egxga/bin/lulesh2.0 -s 100 -i 10"]
 }
