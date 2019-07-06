@@ -19,9 +19,15 @@ action "spack install" {
   args = "install lulesh+mpi"
 }
 
-action "run lulesh" {
+action "create view" {
   needs = "spack install"
   uses = "./"
+  args = "view -d yes hard -i ./install/ lulesh+mpi "
+}
+
+action "run lulesh" {
+  needs = "create view"
+  uses = "./"
   runs = ["sh", "-c",
-           "mpiexec -np 1 ./install/linux-debian10-x86_64/gcc-8.3.0/lulesh-2.0.3-6qj75oexwprfrr6jjq52cbepcc6egxga/bin/lulesh2.0 -s 100 -i 10"]
+           "mpiexec -np 1 ./install/bin/lulesh2.0 -s 100 -i 10"]
 }

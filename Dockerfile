@@ -7,9 +7,6 @@ RUN apt update && \
     old_path='install_tree: $spack/opt/spack';\
     new_path='install_tree: $GITHUB_WORKSPACE/install';\
     sed -i "s+$old_path+$new_path+" /spack/etc/spack/defaults/config.yaml; \
-    old_var='${ARCHITECTURE}/${COMPILERNAME}-${COMPILERVER}/${PACKAGE}-${VERSION}-${HASH}'; \
-    new_var='';\
-    sed -i "s+$old_var+$new_var+" /spack/etc/spack/defaults/config.yaml; \
     rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y gfortran
 ADD entrypoint.sh /
