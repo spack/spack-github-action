@@ -1,16 +1,27 @@
 FROM debian:buster-slim
 
+# install spack
 RUN apt update && \
-    apt install -y \
-    git mpich bash curl python build-essential && \
-    git clone --depth=1 https://github.com/spack/spack /spack; \
-    old_path='install_tree: $spack/opt/spack';\
-    new_path='install_tree: $GITHUB_WORKSPACE/install';\
-    sed -i "s+$old_path+$new_path+" /spack/etc/spack/defaults/config.yaml; \
+    apt install -y --no-install-recommends \
+      autoconf build-essential gfortran coreutils \
+      ca-certificates curl git python unzip tar && \
+    git clone --depth=1 https://github.com/spack/spack /spack && \
     rm -rf /var/lib/apt/lists/*
-RUN apt-get update && apt-get install -y gfortran
-ADD entrypoint.sh /
+
+# modify spack config
+RUN sed -i \
+      's/$spack\(.*\)/"${GITHUB_WORKSPACE}\/spack\1"/' \
+      /spack/etc/spack/defaults/config.yaml && \
+    sed -i \
+      's/misc_cache: .*/misc_cache: "${GITHUB_WORKSPACE}\/spack\/misc_cache"/' \
+      /spack/etc/spack/defaults/config.yaml
+
 ENV SPACK_ROOT=/spack
 ENV PATH=$PATH:/spack/bin
+
+# configure system-wide compiler
+RUN spack compiler find --scope defaults
+
+ADD entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]

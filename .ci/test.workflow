@@ -1,5 +1,5 @@
 workflow "spack tests" {
-  resolves = "run lulesh"
+  resolves = "run"
 }
 
 action "lint" {
@@ -7,27 +7,17 @@ action "lint" {
   args = "-x entrypoint.sh"
 }
 
-action "add compiler"{
-    needs = "lint"
-    uses = "./"
-    args = "compiler find"
+action "install" {
+  needs = "lint"
+  uses = "./"
+  args = "install lulesh~mpi"
 }
 
-action "spack install" {
-  needs = "add compiler"
+action "run" {
+  needs = "install"
   uses = "./"
-  args = "install lulesh+mpi"
-}
-
-action "create view" {
-  needs = "spack install"
-  uses = "./"
-  args = "view -d yes hard -i ./install/ lulesh+mpi "
-}
-
-action "run lulesh" {
-  needs = "create view"
-  uses = "./"
-  runs = ["sh", "-c",
-           "mpiexec -np 1 ./install/bin/lulesh2.0 -s 100 -i 10"]
+  runs = [
+    "sh", "-c",
+    "$(spack location --install-dir lulesh~mpi)/bin/lulesh2.0 -s 100 -i 10"
+  ]
 }
