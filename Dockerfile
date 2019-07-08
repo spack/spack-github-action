@@ -4,7 +4,7 @@ FROM debian:buster-slim
 RUN apt update && \
     apt install -y --no-install-recommends \
       autoconf build-essential gfortran coreutils \
-      ca-certificates curl git python unzip tar && \
+      ca-certificates curl ssh git python unzip tar && \
     git clone --depth=1 https://github.com/spack/spack /spack && \
     rm -rf /var/lib/apt/lists/*
 
