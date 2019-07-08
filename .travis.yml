@@ -8,4 +8,4 @@ install:
 - export PYTHONUNBUFFERED=1
 - pip install /tmp/popper/cli
 script:
-- travis_wait 60 popper run --recursive
+- popper run
