@@ -6,7 +6,7 @@ source "$SPACK_ROOT/share/spack/setup-env.sh"
 
 # set env and view paths
 SPACK_ENV_PATH="$GITHUB_WORKSPACE/spack/env"
-SPACK_ENV_VIEW="$SPACK_ENV_PATH/spack/env/view"
+SPACK_ENV_VIEW="$SPACK_ENV_PATH/view"
 
 # create environment if it doesn't exist
 if [ ! -d "$SPACK_ENV_PATH" ]; then
