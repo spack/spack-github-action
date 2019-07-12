@@ -1,10 +1,10 @@
-FROM debian:buster-slim
+FROM python:3.7-slim-stretch
 
 # install spack
 RUN apt update && \
     apt install -y --no-install-recommends \
       autoconf build-essential gfortran coreutils \
-      ca-certificates curl ssh-client git virtualenv unzip tar && \
+      ca-certificates curl ssh-client git unzip tar && \
     git clone --depth=1 https://github.com/spack/spack /spack && \
     rm -rf /var/lib/apt/lists/*
 
