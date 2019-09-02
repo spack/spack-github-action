@@ -20,4 +20,9 @@ spack env activate "$SPACK_ENV_PATH"
 # add environment view to PATH
 PATH="$PATH:$SPACK_ENV_VIEW/bin"
 
+# add /tmp/spack-stage path
+mkdir -p /tmp/spack-stage
+chmod 777 /tmp/spack-stage
+
+
 sh -c "$*"
