@@ -1,6 +1,6 @@
-# Spack
+# Spack GitHub Action
 
-Install packages using [Spack](https://github.com/spack/spack).
+This is a GitHub action you can use to install packages using [Spack](https://github.com/spack/spack).
 
 ## Usage
 
