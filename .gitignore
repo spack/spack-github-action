@@ -1,6 +1,0 @@
-*.sw?
-.pipeline_cache.yml
-popper/
-.idea/
-popper_logs/
-spack/
